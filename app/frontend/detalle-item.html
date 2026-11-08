@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
 	<meta charset="UTF-8">
@@ -11,52 +11,116 @@
 
 <body>
 	<div class="user-info">
-		<a href="acceso.html">
-			<button class="btn-tipo-1"> Iniciar sesión</button>
-		</a>
-		<button class="btn-tipo-3"> Cerrar sesión</button>
-		<!-- Nombre del usuario se muestra si se inicia sesión -->
-		<div class="usuario-autorizado">
-			<p>Nombre del usuario</p>
-			<img class="user-icon" src="../assets/logos/user.png" alt="user.png">
+		<a id="login-link" class="btn-tipo-1" href="acceso.html">Iniciar sesión</a>
+		<button id="logout-button" class="btn-tipo-3" type="button" hidden>Cerrar sesión</button>
+		<div class="usuario-autorizado" hidden>
+			<p></p>
+			<img class="user-icon" src="../assets/logos/user.png" alt="Usuario">
 		</div>
 	</div>
-
 	<header>
-		<a href="index.html">
-			<img class="store-logo" src="../assets/logos/logo.png" alt="logo.png">
-		</a>
+		<a href="index.html"><img class="store-logo" src="../assets/logos/logo.png" alt="Tienda"></a>
 		<nav>
 			<ul class="nav-items">
-				<li><a href="index.html">Landing Page</a></li>
+				<li><a href="index.html">Inicio</a></li>
 				<li><a href="catalogo.html">Catálogo</a></li>
-				<li><a href="mis-pedidos.html">Mis Pedidos</a></li>
+				<li><a href="mis-pedidos.html">Mis pedidos</a></li>
 				<li><a href="carrito.html">Carrito</a></li>
 			</ul>
 		</nav>
 	</header>
+
 	<main>
 		<section class="productos-section">
-			<div class="item-card-detalle">
-				<img src="../assets/productos/cables/usbc.png" alt="usbc.png">
+			<div class="item-card-detalle" id="detalle-producto" hidden>
+				<img id="producto-imagen" src="../assets/logos/logo.png" alt="">
 				<div class="item-card-detalle-info">
-					<p class="categoria-label"><b> <small> ELECTRÓNICA</small></b></p>
-					<h2>Nombre del producto</h2>
-					<h2>$30.00</h2>
+					<p class="categoria-label"><b><small id="producto-categoria"></small></b></p>
+					<h1 id="producto-nombre"></h1>
+					<h2 id="producto-precio"></h2>
 					<div class="disponibilidad">
-						<p>Disponibilidad: 20 unidades disponibles en bodega.</p>
+						<p id="producto-stock"></p>
 					</div>
-					<p><b>DESCRIPCIÓN DEL PRODUCTO</b></p>
-					<p class="descripcion-producto-recortada">Descripción completa del producto</p>
-					<a href="carrito.html">
-						<button class="btn-tipo-4 btn-size-full-width mt-5"><b>Añadir al carrito</b></button>
-					</a>
+					<h2>Descripción del producto</h2>
+					<p id="producto-descripcion"></p>
+					<div class="acceso-campo">
+						<label for="producto-cantidad">Cantidad</label>
+						<input class="campo-texto" id="producto-cantidad" type="number" min="1" value="1">
+					</div>
+					<button class="btn-tipo-4 btn-size-full-width mt-5" id="agregar-carrito" type="button">
+						Añadir al carrito
+					</button>
+					<p id="detalle-mensaje" role="status" hidden></p>
 				</div>
 			</div>
+			<p id="detalle-error" role="alert" hidden></p>
 		</section>
 	</main>
+
 	<footer>
-		<p>2026 Mi tienda en linea. Todos los derechos reservados.</p>
+		<p>2026 Mi tienda en línea. Todos los derechos reservados.</p>
 	</footer>
+
+	<script src="store.js"></script>
+	<script>
+		const detail = document.querySelector("#detalle-producto");
+		const errorMessage = document.querySelector("#detalle-error");
+		const addButton = document.querySelector("#agregar-carrito");
+		let product;
+
+		async function initializeDetail() {
+			const user = await Store.requireAuth();
+			if (!user) return;
+			const productId = new URLSearchParams(location.search).get("id");
+			if (!productId || !/^\d+$/.test(productId)) {
+				Store.showMessage(errorMessage, "No se indicó un producto válido.");
+				return;
+			}
+			try {
+				product = await Store.request(`/productos/${productId}`);
+				detail.hidden = false;
+				document.querySelector("#producto-imagen").src = Store.imageUrl(product.image_path);
+				document.querySelector("#producto-imagen").alt = product.name;
+				document.querySelector("#producto-categoria").textContent =
+					product.category_name || "Sin categoría";
+				document.querySelector("#producto-nombre").textContent = product.name;
+				document.querySelector("#producto-precio").textContent = Store.formatPrice(product.price);
+				document.querySelector("#producto-stock").textContent =
+					product.stock > 0 ? `${product.stock} unidades disponibles` : "Agotado";
+				document.querySelector("#producto-descripcion").textContent =
+					product.description || "Sin descripción.";
+				const quantityInput = document.querySelector("#producto-cantidad");
+				quantityInput.max = product.stock;
+				addButton.disabled = product.stock < 1;
+				if (product.stock < 1) quantityInput.disabled = true;
+			} catch (error) {
+				Store.showMessage(errorMessage, error.message);
+			}
+		}
+
+		addButton.addEventListener("click", async () => {
+			const quantity = Number(document.querySelector("#producto-cantidad").value);
+			const message = document.querySelector("#detalle-mensaje");
+			if (!Number.isInteger(quantity) || quantity < 1 || quantity > product.stock) {
+				Store.showMessage(message, "Indica una cantidad válida según el inventario.");
+				return;
+			}
+			addButton.disabled = true;
+			try {
+				await Store.request("/carrito/items", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ product_id: product.id, quantity })
+				});
+				location.assign("carrito.html");
+			} catch (error) {
+				Store.showMessage(message, error.message);
+				addButton.disabled = false;
+			}
+		});
+
+		initializeDetail();
+	</script>
 </body>
+
 </html>

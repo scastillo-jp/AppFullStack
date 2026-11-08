@@ -7,3 +7,5 @@ class Producto(SQLModel, table=True):
     price: float = Field(gt=0)
     stock: int = Field(default=0, ge=0)
     user_id: int = Field(foreign_key="usuario.id", index=True)
+    category_id: int | None = Field(default=None, foreign_key="categoria.id", index=True)
+    image_path: str | None = Field(default=None, max_length=500)

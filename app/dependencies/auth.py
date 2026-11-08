@@ -8,7 +8,7 @@ from sqlmodel import select
 
 from app.db.database import SessionDep
 from app.core.config import SECRET_KEY, ALGORITHM
-from app.models.usuario import Usuario
+from app.models.usuario import ROL_ADMINISTRADOR, Usuario
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -44,3 +44,15 @@ def get_current_user(
 
 
 CurrentUser = Annotated[Usuario, Depends(get_current_user)]
+
+
+def get_current_admin(current_user: CurrentUser) -> Usuario:
+    if current_user.role != ROL_ADMINISTRADOR:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Se requiere el rol de administrador"
+        )
+    return current_user
+
+
+CurrentAdmin = Annotated[Usuario, Depends(get_current_admin)]

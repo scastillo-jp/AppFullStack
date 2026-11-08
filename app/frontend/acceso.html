@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
 	<meta charset="UTF-8">
@@ -15,7 +15,7 @@
 			<h1 id="inicio-sesion-titulo">Bienvenido de nuevo</h1>
 			<p class="acceso-subtitulo">Ingresa tus datos para acceder</p>
 
-			<form class="acceso-form">
+			<form class="acceso-form" id="inicio-sesion-form">
 				<div class="acceso-campo">
 					<label for="email">Correo Electrónico</label>
 					<input class="campo-texto" type="email" id="email" name="email" placeholder="tu@email.com"
@@ -27,6 +27,7 @@
 						autocomplete="current-password" required>
 				</div>
 				<button type="submit" class="btn-tipo-1 btn-size-1">Iniciar Sesión</button>
+				<p class="mensaje-error" id="inicio-sesion-mensaje" role="alert" hidden></p>
 			</form>
 
 			<p class="acceso-cambio">¿No tienes cuenta?
@@ -38,7 +39,7 @@
 			<h1 id="registro-titulo">Crea tu cuenta</h1>
 			<p class="acceso-subtitulo">Únete para empezar a comprar</p>
 
-			<form class="acceso-form">
+			<form class="acceso-form" id="registro-form">
 				<div class="acceso-campo">
 					<label for="nombre">Nombre Completo</label>
 					<input class="campo-texto" type="text" id="nombre" name="nombre" placeholder="Juan Pérez"
@@ -67,11 +68,17 @@
 						autocomplete="street-address" required>
 				</div>
 				<div class="acceso-campo">
+					<label for="ciudad">Ciudad</label>
+					<input class="campo-texto" type="text" id="ciudad" name="city" placeholder="Loja"
+						autocomplete="address-level2" required>
+				</div>
+				<div class="acceso-campo">
 					<label for="cedula">Cédula</label>
 					<input class="campo-texto" type="text" id="cedula" name="cedula" placeholder="123456789"
 						autocomplete="off" required>
 				</div>
 				<button type="submit" class="btn-tipo-1 btn-size-1">Registrarse</button>
+				<p class="mensaje-error" id="registro-mensaje" role="alert" hidden></p>
 			</form>
 
 			<p class="acceso-cambio">¿Ya tienes cuenta?
@@ -80,6 +87,7 @@
 		</section>
 	</main>
 	
+	<script src="store.js"></script>
 	<script>
 		const formularios = document.querySelectorAll(".acceso-panel");
 
@@ -94,6 +102,72 @@
 
 				document.getElementById(vistaActiva).querySelector("input").focus();
 			});
+		});
+
+		const loginForm = document.querySelector("#inicio-sesion-form");
+		const registerForm = document.querySelector("#registro-form");
+		const loginMessage = document.querySelector("#inicio-sesion-mensaje");
+		const registerMessage = document.querySelector("#registro-mensaje");
+
+		loginForm.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			Store.showMessage(loginMessage, "");
+			const credentials = new URLSearchParams();
+			credentials.set("username", loginForm.elements.email.value.trim().toLowerCase());
+			credentials.set("password", loginForm.elements.password.value);
+			try {
+				const response = await fetch(`${Store.API_BASE_URL}/auth/login`, {
+					method: "POST",
+					headers: { "Content-Type": "application/x-www-form-urlencoded" },
+					body: credentials
+				});
+				const data = await response.json();
+				if (!response.ok) throw new Error(data.detail || "No se pudo iniciar sesión.");
+				localStorage.setItem(Store.tokenKey, data.access_token);
+				location.assign("index.html");
+			} catch (error) {
+				Store.showMessage(loginMessage, error.message);
+			}
+		});
+
+		registerForm.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			Store.showMessage(registerMessage, "");
+			const formData = new FormData(registerForm);
+			const payload = {
+				full_name: formData.get("nombre").trim(),
+				email: formData.get("email-registro").trim().toLowerCase(),
+				password: formData.get("password-registro"),
+				phone: formData.get("telefono").trim(),
+				address: formData.get("direccion").trim(),
+				city: formData.get("city").trim(),
+				cedula: formData.get("cedula").trim()
+			};
+			try {
+				const response = await fetch(`${Store.API_BASE_URL}/auth/register`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload)
+				});
+				const data = await response.json();
+				if (!response.ok) throw new Error(data.detail || "No se pudo crear la cuenta.");
+				const credentials = new URLSearchParams();
+				credentials.set("username", payload.email);
+				credentials.set("password", payload.password);
+				const loginResponse = await fetch(`${Store.API_BASE_URL}/auth/login`, {
+					method: "POST",
+					headers: { "Content-Type": "application/x-www-form-urlencoded" },
+					body: credentials
+				});
+				const loginData = await loginResponse.json();
+				if (!loginResponse.ok) {
+					throw new Error(loginData.detail || "Cuenta creada; inicia sesión para continuar.");
+				}
+				localStorage.setItem(Store.tokenKey, loginData.access_token);
+				location.assign("index.html");
+			} catch (error) {
+				Store.showMessage(registerMessage, error.message);
+			}
 		});
 	</script>
 </body>

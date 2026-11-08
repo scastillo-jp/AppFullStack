@@ -133,6 +133,8 @@ header {
   text-align: center;
   width: 100px;
   background: #f1f1f1;
+  color: inherit;
+  text-decoration: none;
 }
 .categoria-card img {
   width: 40px;
@@ -654,6 +656,20 @@ header {
   margin: 0;
   /* font-size: 18px; */
   font-weight: bold;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.mensaje-error {
+  color: #9b1f1f;
+  font-weight: 600;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .acceso-cambio {

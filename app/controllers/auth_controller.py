@@ -3,9 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from app.db.database import SessionDep
-from app.schemas.usuario import UsuarioCreate, UsuarioRead, Token
+from app.schemas.usuario import UsuarioCreate, UsuarioRead, UsuarioUpdate, Token
 from app.services import usuario_service as user_service
 from app.core.security import create_access_token
+from app.dependencies.auth import CurrentUser
 
 router = APIRouter(tags=["Auth"], prefix="/auth")
 
@@ -51,3 +52,23 @@ def login(
         "access_token": token,
         "token_type": "bearer"
     }
+
+
+@router.get("/me", response_model=UsuarioRead)
+def get_profile(current_user: CurrentUser):
+    return current_user
+
+
+@router.patch("/me", response_model=UsuarioRead)
+def update_profile(
+    user_data: UsuarioUpdate,
+    current_user: CurrentUser,
+    session: SessionDep
+):
+    try:
+        return user_service.update_user(current_user, user_data, session)
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(error)
+        ) from error

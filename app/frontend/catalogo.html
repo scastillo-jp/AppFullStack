@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
 	<meta charset="UTF-8">
@@ -11,91 +11,99 @@
 
 <body>
 	<div class="user-info">
-		<a href="acceso.html">
-			<button class="btn-tipo-1"> Iniciar sesión</button>
-		</a>
-		<button class="btn-tipo-3"> Cerrar sesión</button>
-		<!-- Nombre del usuario se muestra si se inicia sesión -->
-		<div class="usuario-autorizado">
-			<p>Nombre del usuario</p>
-			<img class="user-icon" src="../assets/logos/user.png" alt="user.png">
+		<a id="login-link" class="btn-tipo-1" href="acceso.html">Iniciar sesión</a>
+		<button id="logout-button" class="btn-tipo-3" type="button" hidden>Cerrar sesión</button>
+		<div class="usuario-autorizado" hidden>
+			<p></p>
+			<img class="user-icon" src="../assets/logos/user.png" alt="Usuario">
 		</div>
 	</div>
-
 	<header>
-		<a href="index.html">
-			<img class="store-logo" src="../assets/logos/logo.png" alt="logo.png">
-		</a>
+		<a href="index.html"><img class="store-logo" src="../assets/logos/logo.png" alt="Tienda"></a>
 		<nav>
 			<ul class="nav-items">
-				<li><a href="index.html">Landing Page</a></li>
-				<li><a href="catalogo.html">Catálogo</a></li>
-				<li><a href="mis-pedidos.html">Mis Pedidos</a></li>
+				<li><a href="index.html">Inicio</a></li>
+				<li><a href="catalogo.html" aria-current="page">Catálogo</a></li>
+				<li><a href="mis-pedidos.html">Mis pedidos</a></li>
 				<li><a href="carrito.html">Carrito</a></li>
 			</ul>
 		</nav>
 	</header>
+
 	<main>
 		<section class="busqueda-productos-seccion">
 			<div>
-				<h1 class="color-blanco txt-center">Descubre la mejor tecnología y estilo para tu día a día.</h1>
-				<input class="barra-busqueda campo-texto mt-20" type="text" placeholder="Buscar productos...">
-				<button class="btn-tipo-1 btn-size-1">Buscar</button>
+				<h1 class="color-blanco txt-center">Catálogo de productos</h1>
+				<form class="catalogo-filtros" id="filtros-form">
+					<input class="campo-texto mt-20" id="busqueda" type="search"
+						placeholder="Buscar productos..." aria-label="Buscar productos">
+					<select class="campo-texto mt-10" id="filtro-categoria" aria-label="Filtrar por categoría">
+						<option value="">Todas las categorías</option>
+					</select>
+					<button class="btn-tipo-1 btn-size-1" type="submit">Buscar</button>
+				</form>
 			</div>
 		</section>
 
-		<section class="catalogo-productos-section">
-			<h2>Catálogo de productos</h2>
-			<p class="mt-5">Explora nuestra amplia gama de productos en diferentes categorías.</p>
-			<div class="categorias-container">
-				<div class="categoria-card">
-					<p>Electrónica</p>
-				</div>
-				<div class="categoria-card">
-					<p>Hogar</p>
-				</div>
-				<div class="categoria-card">
-					<p>Ropa</p>
-				</div>
-			</div>
-		</section>
-
-		<section class="productos-section">
-			<h2 class="mt-20 mb-10">Productos seleccionados aleatoriamente de todo el catálogo</h2>
-			<div>
-				<div class="productos-container-items">
-					<div class="item-card">
-						<img src="../assets/productos/cables/usbc.png" alt="usbc.png">
-						<div class="item-card-info">
-							<p><b> Nombre del producto</b></p>
-							<p>Precio $: <b>XX</b></p>
-							<p>stock: <b>XX</b> | <small>DISPONIBLE</small></p>
-							<p class="descripcion-producto-recortada">Descripción breve del producto</p>
-							<a href="detalle-item.html">
-								<button class="btn-tipo-4 btn-size-full-width mt-5">Ver producto</button>
-							</a>
-						</div>
-					</div>
-					<div class="item-card">
-						<img src="../assets/productos/cables/usbc.png" alt="usbc.png">
-						<div class="item-card-info">
-							<p><b> Nombre del producto</b></p>
-							<p>Precio $: <b>XX</b></p>
-							<p>stock: <b>XX</b> | <small>DISPONIBLE</small></p>
-							<p class="descripcion-producto-recortada">Descripción breve del producto</p>
-							<a href="detalle-item.html">
-								<button class="btn-tipo-4 btn-size-full-width mt-5">Ver producto</button>
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
+		<section class="productos-section catalogo-productos-section">
+			<p class="mt-5">Explora nuestra gama de productos.</p>
+			<div class="productos-container-items" id="productos-catalogo"></div>
+			<p id="catalogo-mensaje" role="status" hidden></p>
 		</section>
 	</main>
 
 	<footer>
-		<p>2026 Mi tienda en linea. Todos los derechos reservados.</p>
+		<p>2026 Mi tienda en línea. Todos los derechos reservados.</p>
 	</footer>
+
+	<script src="store.js"></script>
+	<script>
+		const productsContainer = document.querySelector("#productos-catalogo");
+		const filtersForm = document.querySelector("#filtros-form");
+		const searchInput = document.querySelector("#busqueda");
+		const categoryFilter = document.querySelector("#filtro-categoria");
+		const message = document.querySelector("#catalogo-mensaje");
+
+		async function loadProducts() {
+			const params = new URLSearchParams();
+			if (searchInput.value.trim()) params.set("search", searchInput.value.trim());
+			if (categoryFilter.value) params.set("category_id", categoryFilter.value);
+			Store.showMessage(message, "");
+			try {
+				const products = await Store.request(`/productos?${params}`);
+				Store.renderProductCards(productsContainer, products);
+			} catch (error) {
+				Store.showMessage(message, error.message);
+			}
+		}
+
+		async function iniciarCatalogo() {
+			const user = await Store.requireAuth();
+			if (!user) return;
+			try {
+				const categories = await Store.request("/categorias");
+				for (const category of categories) {
+					const option = document.createElement("option");
+					option.value = category.id;
+					option.textContent = category.name;
+					categoryFilter.append(option);
+				}
+				const query = new URLSearchParams(location.search);
+				searchInput.value = query.get("search") || "";
+				categoryFilter.value = query.get("category_id") || "";
+				await loadProducts();
+			} catch (error) {
+				Store.showMessage(message, error.message);
+			}
+		}
+
+		filtersForm.addEventListener("submit", (event) => {
+			event.preventDefault();
+			loadProducts();
+		});
+		categoryFilter.addEventListener("change", loadProducts);
+		iniciarCatalogo();
+	</script>
 </body>
 
 </html>

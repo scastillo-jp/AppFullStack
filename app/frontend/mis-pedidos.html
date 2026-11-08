@@ -4,115 +4,143 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title class="mb-20">Mis Pedidos</title>
+	<title>Mis pedidos</title>
 	<link rel="stylesheet" href="styles.css">
 	<link rel="icon" href="../assets/logos/logo.png">
 </head>
 
 <body>
 	<div class="user-info">
-		<a href="acceso.html">
-			<button class="btn-tipo-1"> Iniciar sesión</button>
-		</a>
-		<button class="btn-tipo-3"> Cerrar sesión</button>
-		<!-- Nombre del usuario se muestra si se inicia sesión -->
-		<div class="usuario-autorizado">
-			<p>Nombre del usuario</p>
-			<img class="user-icon" src="../assets/logos/user.png" alt="user.png">
+		<a id="login-link" class="btn-tipo-1" href="acceso.html">Iniciar sesión</a>
+		<button id="logout-button" class="btn-tipo-3" type="button" hidden>Cerrar sesión</button>
+		<div class="usuario-autorizado" hidden>
+			<p></p>
+			<img class="user-icon" src="../assets/logos/user.png" alt="Usuario">
 		</div>
 	</div>
-
 	<header>
-		<a href="index.html">
-			<img class="store-logo" src="../assets/logos/logo.png" alt="logo.png">
-		</a>
+		<a href="index.html"><img class="store-logo" src="../assets/logos/logo.png" alt="Tienda"></a>
 		<nav>
 			<ul class="nav-items">
-				<li><a href="index.html">Landing Page</a></li>
+				<li><a href="index.html">Inicio</a></li>
 				<li><a href="catalogo.html">Catálogo</a></li>
-				<li><a href="mis-pedidos.html">Mis Pedidos</a></li>
+				<li><a href="mis-pedidos.html" aria-current="page">Mis pedidos</a></li>
 				<li><a href="carrito.html">Carrito</a></li>
 			</ul>
 		</nav>
 	</header>
 
 	<main class="mis-pedidos-page">
-		<h2 class="mb-10">Mi Dirección de envío</h2>
-		<div class="mi-direccion mb-20">
-			<p class="pedido-dato"><span>Dirección:</span> <b>Calle Falsa 123, Ciudad, País</b></p>
-			<p class="pedido-dato"><span>Ciudad:</span> <b>Loja</b></p>
-			<p class="pedido-dato"><span>Teléfono:</span> <b>12345</b></p>
-		</div>
-		<h2 class="mb-10">Mis Pedidos</h2>
-		<article class="pedido-card superficie-card">
-			<div class="pedido-resumen">
-				<div class="pedido-dato">
-					<span>Pedido realizado:</span>
-					<strong>11/7/2026</strong>
-				</div>
-				<div class="pedido-dato">
-					<span>Total:</span>
-					<strong>$129.99</strong>
-				</div>
-				<div class="pedido-dato">
-					<span>Pedido ID#:</span>
-					<strong>ORD-4888</strong>
-				</div>
+		<section>
+			<h1 class="mb-10">Mi dirección de envío</h1>
+			<div class="mi-direccion mb-20">
+				<p class="pedido-dato"><span>Dirección:</span> <b id="direccion-usuario"></b></p>
+				<p class="pedido-dato"><span>Ciudad:</span> <b id="ciudad-usuario"></b></p>
+				<p class="pedido-dato"><span>Teléfono:</span> <b id="telefono-usuario"></b></p>
 			</div>
-			<div class="pedido-estados">
-				<ol class="pedido-progreso" aria-label="Estado del pedido">
-					<li class="pedido-paso pedido-paso-completado">Pendiente</li>
-					<li class="pedido-paso pedido-paso-completado">Procesando</li>
-					<li class="pedido-paso">Enviado</li>
-					<li class="pedido-paso">Entregado</li>
-				</ol>
-			</div>
-			<div class="pedido-producto">
-				<img class="pedido-producto-imagen" src="../assets/productos/teclados/logitec.jpg" alt="logitec.jpg">
-				<div class="pedido-producto-info">
-					<h4>Auriculares Inalámbricos Pro</h4>
-					<p>Cant: 1</p>
-				</div>
-				<strong class="pedido-producto-precio">$129.99</strong>
-			</div>
-		</article>
-
-		<article class="pedido-card superficie-card mt-10">
-			<div class="pedido-resumen">
-				<div class="pedido-dato">
-					<span>Pedido realizado:</span>
-					<strong>11/7/2026</strong>
-				</div>
-				<div class="pedido-dato">
-					<span>Total:</span>
-					<strong>$129.99</strong>
-				</div>
-				<div class="pedido-dato">
-					<span>Pedido ID#:</span>
-					<strong>ORD-4888</strong>
-				</div>
-			</div>
-			<div class="pedido-estados">
-				<ol class="pedido-progreso" aria-label="Estado del pedido">
-					<li class="pedido-paso pedido-paso-completado">Pendiente</li>
-					<li class="pedido-paso pedido-paso-completado">Procesando</li>
-					<li class="pedido-paso">Enviado</li>
-					<li class="pedido-paso">Entregado</li>
-				</ol>
-			</div>
-			<div class="pedido-producto">
-				<img class="pedido-producto-imagen" src="../assets/productos/teclados/logitec.jpg" alt="logitec.jpg">
-				<div class="pedido-producto-info">
-					<h4>Auriculares Inalámbricos Pro</h4>
-					<p>Cant: 1</p>
-				</div>
-				<strong class="pedido-producto-precio">$129.99</strong>
-			</div>
-		</article>
+		</section>
+		<section>
+			<h2 class="mb-10">Mis pedidos</h2>
+			<div id="lista-pedidos"></div>
+			<p id="pedidos-mensaje" role="status" hidden></p>
+		</section>
 	</main>
+
 	<footer>
-		<p>2026 Mi tienda en linea. Todos los derechos reservados.</p>
+		<p>2026 Mi tienda en línea. Todos los derechos reservados.</p>
 	</footer>
+
+	<script src="store.js"></script>
+	<script>
+		const statuses = ["pendiente", "procesando", "enviado", "entregado"];
+		const statusLabels = ["Pendiente", "Procesando", "Enviado", "Entregado"];
+		const ordersContainer = document.querySelector("#lista-pedidos");
+
+		function createOrderCard(order) {
+			const article = document.createElement("article");
+			article.className = "pedido-card superficie-card";
+			const summary = document.createElement("div");
+			summary.className = "pedido-resumen";
+			const date = new Date(order.created_at).toLocaleDateString("es");
+			for (const [label, value] of [
+				["Pedido realizado:", date],
+				["Total:", Store.formatPrice(order.total)],
+				["Pedido ID#:", order.id]
+			]) {
+				const detail = document.createElement("div");
+				detail.className = "pedido-dato";
+				const title = document.createElement("span");
+				title.textContent = label;
+				const content = document.createElement("strong");
+				content.textContent = value;
+				detail.append(title, content);
+				summary.append(detail);
+			}
+			const progress = document.createElement("ol");
+			progress.className = "pedido-progreso";
+			progress.setAttribute("aria-label", `Estado del pedido: ${order.status}`);
+			const activeIndex = statuses.indexOf(order.status);
+			statusLabels.forEach((label, index) => {
+				const step = document.createElement("li");
+				step.className = "pedido-paso";
+				if (index <= activeIndex) step.classList.add("pedido-paso-completado");
+				step.textContent = label;
+				progress.append(step);
+			});
+			const statusSection = document.createElement("div");
+			statusSection.className = "pedido-estados";
+			statusSection.append(progress);
+			article.append(summary, statusSection);
+
+			for (const item of order.items) {
+				const product = document.createElement("div");
+				product.className = "pedido-producto";
+				const image = document.createElement("img");
+				image.className = "pedido-producto-imagen";
+				image.src = Store.imageUrl(item.image_path);
+				image.alt = item.product_name;
+				const info = document.createElement("div");
+				info.className = "pedido-producto-info";
+				const name = document.createElement("h3");
+				name.textContent = item.product_name;
+				const quantity = document.createElement("p");
+				quantity.textContent = `Cantidad: ${item.quantity}`;
+				info.append(name, quantity);
+				const price = document.createElement("strong");
+				price.className = "pedido-producto-precio";
+				price.textContent = Store.formatPrice(Number(item.unit_price) * item.quantity);
+				product.append(image, info, price);
+				article.append(product);
+			}
+			return article;
+		}
+
+		async function initializeOrders() {
+			const user = await Store.requireAuth();
+			if (!user) return;
+			document.querySelector("#direccion-usuario").textContent = user.address || "No registrada";
+			document.querySelector("#ciudad-usuario").textContent = user.city || "No registrada";
+			document.querySelector("#telefono-usuario").textContent = user.phone || "No registrado";
+			try {
+				const orders = await Store.request("/pedidos");
+				ordersContainer.replaceChildren();
+				if (!orders.length) {
+					const empty = document.createElement("p");
+					empty.className = "carrito-vacio";
+					empty.textContent = "Todavía no tienes pedidos.";
+					ordersContainer.append(empty);
+					return;
+				}
+				for (const order of orders) {
+					ordersContainer.append(createOrderCard(order));
+				}
+			} catch (error) {
+				Store.showMessage(document.querySelector("#pedidos-mensaje"), error.message);
+			}
+		}
+
+		initializeOrders();
+	</script>
 </body>
 
 </html>
