@@ -17,9 +17,12 @@ section {
   padding: 20px;
 }
 footer {
-  background-color: #f8f8f8;
+  background-color: #4d475f;
   text-align: center;
   padding: 10px;
+  color: white;
+  position: sticky;
+  bottom: 0;
 }
 
 header {
@@ -28,6 +31,8 @@ header {
   align-items: center;
   background-color: #f8f8f8;
   padding: 10px;
+  position: sticky;
+  top: 0;
 }
 
 .nav-items {
@@ -56,7 +61,7 @@ header {
   align-items: center;
   justify-content: end;
   width: 100%;
-  background: #343434;
+  background: #4d475f;
   color:white;
   height: 55px;
 }
@@ -65,6 +70,8 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0px 10px;
+  text-transform: uppercase;
 }
 
 /* barra de búsqueda */
@@ -73,12 +80,12 @@ header {
 }
 
 .item-card {
-  border: 2px solid #d8dce6;
+  border: 1px solid #d8dce6;
   border-radius: 15px;
   text-align: left;
   width: 250px;
-  height: 350px;
-  margin: 5px;
+  height: 380px;
+  margin: 0 5px 5px 0;
   background: white;
 }
 .item-card img {
@@ -87,8 +94,18 @@ header {
   height: 200px;
   border-radius: 15px;
 }
+.precio-label {
+  font-weight: bold;
+  color: #7a56ea !important;
+}
 .item-card-info {
   padding: 10px;
+}
+.item-card-info h3 {
+  margin-bottom: 3px;
+}
+.item-card-info p {
+  color: #6b7280;
 }
 
 .productos-section {
@@ -105,6 +122,11 @@ header {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #6b7280;
+  margin: 7px 0;
+}
+.stock-text {
+  font-size: 13px;
 }
 
 
@@ -113,10 +135,11 @@ header {
   align-items: center;
   justify-content: center;
   padding: 10px;
-  background-color: #3e2c75;
+  background: linear-gradient(#3e2c75, #694bc5);
   min-height: 300px;
   border-radius: 15px;
   margin: 20px;
+  box-shadow: 0px 0px 5px #402d7859;
 }
 /* categorias cards */
 .categorias-container {
@@ -136,10 +159,14 @@ header {
   color: inherit;
   text-decoration: none;
 }
+
 .categoria-card img {
-  width: 40px;
-  height: auto;
+  width: 80px;
+  height: 80px;
+  max-width: 100%;
+  object-fit: contain;
 }
+
 .categoria-card:hover {
   transform: scale(1.05);
   transition: transform 0.3s;
@@ -148,9 +175,10 @@ header {
 
 .catalogo-productos-section {
   margin: 20px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   border-radius: 15px;
   background: white;
+  box-shadow: 0px 0px 5px #402d7859;
 }
 
 .disponibilidad {
@@ -171,6 +199,7 @@ header {
   background: white;
   border-radius: 15px;
   padding: 10px;
+  box-shadow: 0px 0px 5px #402d7859;
 }
 
 .item-card-detalle > img {
@@ -182,6 +211,58 @@ header {
 
 .item-card-detalle-info {
   width: 100%;
+}
+
+.producto-cantidad-campo {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.producto-cantidad-campo label {
+  color: #374151;
+  font-weight: 600;
+}
+
+.producto-cantidad {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid #d8dee8;
+  border-radius: 20px;
+  background: white;
+}
+
+.producto-cantidad button {
+  width: 56px;
+  height: 56px;
+  border: 0;
+  background: transparent;
+  color: #4b5563;
+  font-size: 28px;
+}
+
+.producto-cantidad button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.producto-cantidad input {
+  width: 48px;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  font: inherit;
+  font-size: 22px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.producto-cantidad input::-webkit-inner-spin-button,
+.producto-cantidad input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
 }
 
 @media (min-width: 768px) {
@@ -285,16 +366,6 @@ header {
   color: #ef4444;
 }
 
-.carrito-eliminar svg {
-  width: 23px;
-  height: 23px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
-}
-
 .carrito-resumen-fila {
   margin-bottom: 20px;
   color: #4b5563;
@@ -339,6 +410,10 @@ header {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.pago-direccion {
+  box-shadow: 0px 0px 5px #402d7859
 }
 
 .pago-direccion,
@@ -415,14 +490,10 @@ header {
   padding: 32px 20px 48px;
 }
 
-.pedidos-lista {
-  display: grid;
-  gap: 32px;
-  padding: 0;
-}
-
 .pedido-card {
   overflow: hidden;
+  box-shadow: 0px 0px 5px #402d7859;
+  margin-bottom: 10px;
 }
 
 .pedido-resumen {
@@ -481,10 +552,9 @@ header {
 }
 
 .pedido-paso-completado {
-  border-color: #bbf7d0;
+  border-color: #21cf5e;
   background: #dcfce7;
   color: #15803d;
-  font-weight: bold;
 }
 
 
@@ -508,12 +578,6 @@ header {
 
 .pedido-producto-info {
   min-width: 0;
-}
-
-.pedido-producto-info h2 {
-  margin-bottom: 4px;
-  color: #1f2937;
-  font-size: 21px;
 }
 
 .pedido-producto-info p {
@@ -557,8 +621,10 @@ header {
     padding: 0 14px 36px;
   }
 
+
   .pago-direccion,
   .metodo-pago {
+    box-shadow: 0px 0px 5px #402d7859;  
     padding: 20px;
   }
 
@@ -569,10 +635,6 @@ header {
   .pago-datos > div {
     grid-template-columns: minmax(90px, 0.6fr) 1fr;
     gap: 8px;
-  }
-
-  .pedidos-lista {
-    gap: 20px;
   }
 
   .pedido-resumen {
@@ -690,8 +752,209 @@ button:disabled {
 }
 
 .mi-direccion {
-  border: 1px solid #e1e5eb;
   border-radius: 15px;
   background: white;
   padding: 20px;
+  box-shadow: 0px 0px 5px #402d7859
+}
+
+.admin-page {
+  width: min(1200px, calc(100% - 32px));
+  margin: 32px auto;
+}
+
+.admin-login {
+  width: min(420px, 100%);
+  box-sizing: border-box;
+  margin: 48px auto;
+  padding: 28px;
+}
+
+.admin-login h1,
+.admin-form-card h2,
+.admin-inventory h2 {
+  margin-bottom: 12px;
+}
+
+.admin-login > p {
+  margin-bottom: 20px;
+  color: #4b5563;
+}
+
+.admin-form {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-form button {
+  justify-self: start;
+}
+
+.admin-dashboard {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-heading,
+.admin-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-heading p {
+  margin-top: 8px;
+  color: #4b5563;
+}
+
+.admin-forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+}
+
+.admin-form-card,
+.admin-inventory {
+  padding: 24px;
+}
+
+.admin-fields-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-inventory-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.8fr);
+  gap: 24px;
+}
+
+.admin-inventory-grid h3 {
+  margin-bottom: 12px;
+}
+
+.admin-category-list,
+.admin-product-list,
+.admin-orders-list {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+}
+
+.admin-order-details {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 20px;
+}
+
+.admin-order-details ul {
+  padding-left: 20px;
+}
+
+.admin-order-details li {
+  margin-bottom: 4px;
+}
+
+.admin-category-list li,
+.admin-product-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+}
+
+.admin-product-card img {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.admin-product-card h4 {
+  margin-bottom: 6px;
+}
+
+.admin-product-card p {
+  margin-top: 4px;
+  color: #4b5563;
+}
+
+.admin-product-card > div {
+  flex: 1;
+}
+
+.admin-message {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #e7f5e8;
+  color: #245b2a;
+}
+
+.admin-message.mensaje-error {
+  background: #fce8e8;
+  color: #9b1f1f;
+}
+
+.admin-dialog {
+  box-sizing: border-box;
+  width: min(440px, calc(100% - 32px));
+  margin: auto;
+  padding: 24px;
+  border: 0;
+  border-radius: 15px;
+}
+
+.admin-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.admin-dialog h2,
+.admin-dialog p {
+  margin-bottom: 16px;
+}
+
+
+.selector-categorias {
+  box-sizing: border-box;
+  width: 25%;
+  min-height: 58px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font: inherit;
+}
+
+.selector-categorias::placeholder {
+  color: #9ca3af;
+}
+
+.carrito-item {
+  box-shadow: 0px 0px 5px #402d7859;
+}
+
+@media (max-width: 760px) {
+  .selector-categorias {
+    width: 100%;
+  }
+  .admin-forms,
+  .admin-inventory-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-heading,
+  .admin-session {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-product-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
 }

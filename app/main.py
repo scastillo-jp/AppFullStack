@@ -6,6 +6,7 @@ from app.controllers.auth_controller import router as auth_router
 from app.controllers.categoria_controller import router as categoria_router
 from app.controllers.carrito_controller import router as carrito_router
 from app.controllers.pedido_controller import router as pedido_router
+from app.controllers.usuario_controller import router as usuario_router
 
 app = FastAPI(lifespan=create_tables)
 app.add_middleware(
@@ -20,3 +21,4 @@ app.include_router(auth_router)
 app.include_router(categoria_router)
 app.include_router(carrito_router)
 app.include_router(pedido_router)
+app.include_router(usuario_router)

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Administración de la tienda</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="icon" href="../assets/logos/logo.png">
+</head>
+
+<body>
+	<main class="admin-page">
+		<section class="admin-login superficie-card" id="admin-login-section">
+			<h1 class="txt-center">Acceso de administración</h1>
+			<p class="txt-center">Uso exclusivo de administradores</p>
+			<form class="admin-form" id="admin-login-form">
+				<div class="acceso-campo">
+					<label for="admin-email">Correo electrónico</label>
+					<input class="campo-texto" type="email" id="admin-email" name="email"
+						autocomplete="username" required>
+				</div>
+				<div class="acceso-campo">
+					<label for="admin-password">Contraseña</label>
+					<input class="campo-texto" type="password" id="admin-password" name="password"
+						autocomplete="current-password" required>
+				</div>
+				<button class="btn-tipo-1 btn-size-full-width" type="submit">Ingresar</button>
+			</form>
+			<p class="mensaje-error" id="admin-login-message" role="alert" hidden></p>
+		</section>
+
+		<section class="admin-dashboard" id="admin-dashboard" hidden>
+			<div class="admin-heading">
+				<div>
+					<h1>Panel de administración</h1>
+					<p>Gestiona las categorías, productos y pedidos de la tienda.</p>
+				</div>
+				<div class="admin-session">
+					<span id="admin-user-name"></span>
+					<button class="btn-tipo-6" id="admin-logout" type="button">Cerrar sesión</button>
+				</div>
+			</div>
+
+			<p class="admin-message" id="admin-message" role="status" hidden></p>
+
+			<div class="admin-forms">
+				<section class="superficie-card admin-form-card">
+					<h2>Crear categoría</h2>
+					<form class="admin-form" id="category-form">
+						<div class="acceso-campo">
+							<label for="category-name">Nombre</label>
+							<input class="campo-texto" type="text" id="category-name" name="name"
+								minlength="2" maxlength="80" required>
+						</div>
+						<div class="acceso-campo">
+							<label for="category-description">Descripción</label>
+							<textarea class="campo-texto" id="category-description" name="description"
+								maxlength="300" rows="3"></textarea>
+						</div>
+						<div class="acceso-campo">
+							<label for="category-image">Ruta de imagen</label>
+							<input class="campo-texto" type="text" id="category-image" name="image_path"
+								maxlength="500" placeholder="app/assets/categoria-logos/electronica.png">
+						</div>
+						<button class="btn-tipo-4 btn-size-full-width" type="submit">Crear categoría</button>
+					</form>
+				</section>
+
+				<section class="superficie-card admin-form-card">
+					<h2>Crear producto</h2>
+					<form class="admin-form" id="product-form">
+						<div class="acceso-campo">
+							<label for="product-category">Categoría</label>
+							<select class="campo-texto" id="product-category" name="category_id">
+								<option value="">Sin categoría</option>
+							</select>
+						</div>
+						<div class="acceso-campo">
+							<label for="product-name">Nombre</label>
+							<input class="campo-texto" type="text" id="product-name" name="name"
+								minlength="2" maxlength="100" required>
+						</div>
+						<div class="acceso-campo">
+							<label for="product-description">Descripción</label>
+							<textarea class="campo-texto" id="product-description" name="description"
+								maxlength="300" rows="3"></textarea>
+						</div>
+						<div class="admin-fields-row">
+							<div class="acceso-campo">
+								<label for="product-price">Precio</label>
+								<input class="campo-texto" type="number" id="product-price" name="price"
+									step="0.01" min="0.01" required>
+							</div>
+							<div class="acceso-campo">
+								<label for="product-stock">Stock</label>
+								<input class="campo-texto" type="number" id="product-stock" name="stock"
+									min="0" step="1" value="0" required>
+							</div>
+						</div>
+						<div class="acceso-campo">
+							<label for="product-image">Ruta de imagen</label>
+							<input class="campo-texto" type="text" id="product-image" name="image_path"
+								maxlength="500" placeholder="app/assets/productos/cables/usbc.png">
+						</div>
+						<button class="btn-tipo-4 btn-size-full-width" id="create-product-button" type="submit">
+							Crear producto
+						</button>
+					</form>
+				</section>
+			</div>
+
+			<section class="admin-inventory superficie-card">
+				<h2>Categorías y productos</h2>
+				<div class="admin-inventory-grid">
+					<div>
+						<h3>Categorías</h3>
+						<ul class="admin-category-list" id="categories"></ul>
+					</div>
+					<div>
+						<h3>Productos</h3>
+						<div class="admin-product-list" id="products"></div>
+					</div>
+				</div>
+			</section>
+			<section class="admin-inventory superficie-card" aria-labelledby="admin-pedidos-titulo">
+				<h2 id="admin-pedidos-titulo">Administrar pedidos</h2>
+				<p class="mb-10">Los estados avanzan de pendiente a procesando, enviado y entregado.</p>
+				<button class="btn-tipo-4 mb-10" id="admin-orders-refresh" type="button">Sincroniza para ver si hay nuevos pedidos</button>
+				<p class="admin-message mb-10" id="admin-orders-message" role="status" aria-live="polite" hidden></p>
+				<div class="admin-orders-list" id="admin-orders" aria-live="polite">
+					<p>Cargando pedidos...</p>
+				</div>
+			</section>
+		</section>
+	</main>
+
+	<dialog class="admin-dialog" id="category-warning" aria-labelledby="category-warning-title"
+		aria-describedby="category-warning-description">
+		<h2 id="category-warning-title">No se puede eliminar la categoría</h2>
+		<p id="category-warning-description">La categoría contiene productos</p>
+		<form method="dialog">
+			<button class="btn-tipo-4 btn-size-full-width" type="submit">Entendido</button>
+		</form>
+	</dialog>
+	<script src="store.js"></script>
+	<script>
+		const API_BASE_URL = "http://localhost:8000";
+		const tokenKey = "admin_access_token";
+		const loginSection = document.querySelector("#admin-login-section");
+		const dashboard = document.querySelector("#admin-dashboard");
+		const loginForm = document.querySelector("#admin-login-form");
+		const loginMessage = document.querySelector("#admin-login-message");
+		const dashboardMessage = document.querySelector("#admin-message");
+		const categoryForm = document.querySelector("#category-form");
+		const productForm = document.querySelector("#product-form");
+		const productCategory = document.querySelector("#product-category");
+		const categoriesList = document.querySelector("#categories");
+		const productsList = document.querySelector("#products");
+		const ordersList = document.querySelector("#admin-orders");
+		const ordersMessage = document.querySelector("#admin-orders-message");
+		const ordersRefresh = document.querySelector("#admin-orders-refresh");
+		const categoryWarning = document.querySelector("#category-warning");
+		const orderStatuses = ["pendiente", "procesando", "enviado", "entregado"];
+		let adminToken = sessionStorage.getItem(tokenKey);
+
+		async function apiRequest(path, options = {}) {
+			const headers = new Headers(options.headers || {});
+			if (adminToken) headers.set("Authorization", `Bearer ${adminToken}`);
+			const response = await fetch(`${API_BASE_URL}${path}`, {
+				...options,
+				headers
+			});
+			const data = response.status === 204 ? null : await response.json().catch(() => null);
+			if (!response.ok) {
+				if (response.status === 401) {
+					endAdminSession();
+					const message = "La sesión expiró. Ingresa de nuevo con tu cuenta administradora.";
+					showMessage(loginMessage, message);
+					throw new Error(message);
+				}
+				if (response.status === 403) {
+					endAdminSession();
+					const message = "Esta sección solo está disponible para administradores.";
+					showMessage(loginMessage, message);
+					throw new Error(message);
+				}
+				const error = new Error(data?.detail || "No se pudo completar la operación.");
+				error.status = response.status;
+				throw error;
+			}
+			return data;
+		}
+
+		function showMessage(element, message, isError = true) {
+			element.textContent = message;
+			element.hidden = !message;
+			element.classList.toggle("mensaje-error", isError);
+		}
+
+		function endAdminSession() {
+			sessionStorage.removeItem(tokenKey);
+			adminToken = null;
+			dashboard.hidden = true;
+			loginSection.hidden = false;
+		}
+
+		async function verifyAdminSession() {
+			if (!adminToken) {
+				loginSection.hidden = false;
+				dashboard.hidden = true;
+				return false;
+			}
+			try {
+				const user = await apiRequest("/auth/me");
+				if (user.role !== "administrador") {
+					endAdminSession();
+					showMessage(loginMessage, "La cuenta ingresada no tiene rol administrador.");
+					return false;
+				}
+				loginSection.hidden = true;
+				dashboard.hidden = false;
+				document.querySelector("#admin-user-name").textContent =
+					user.full_name || user.email;
+				await Promise.all([loadInventory(), loadOrders()]);
+				return true;
+			} catch (error) {
+				if (!loginMessage.textContent) showMessage(loginMessage, error.message);
+				return false;
+			}
+		}
+
+		async function loadInventory() {
+			showMessage(dashboardMessage, "");
+			try {
+				const [categories, products] = await Promise.all([
+					apiRequest("/categorias"),
+					apiRequest("/productos")
+				]);
+				renderCategories(categories);
+				renderProducts(categories, products);
+			} catch (error) {
+				showMessage(dashboardMessage, error.message);
+			}
+		}
+
+		async function loadOrders() {
+			ordersRefresh.disabled = true;
+			ordersList.replaceChildren();
+			const loading = document.createElement("p");
+			loading.textContent = "Cargando pedidos...";
+			ordersList.append(loading);
+			try {
+				const requestToken = adminToken;
+				const orders = await apiRequest("/pedidos/admin");
+				if (!adminToken || adminToken !== requestToken) return;
+				ordersList.replaceChildren();
+				if (!orders.length) {
+					const empty = document.createElement("p");
+					empty.textContent = "No hay pedidos registrados.";
+					ordersList.append(empty);
+					return;
+				}
+				for (const order of orders) {
+					ordersList.append(createOrderCard(order));
+				}
+			} catch (error) {
+				ordersList.replaceChildren();
+				showMessage(dashboard.hidden ? loginMessage : ordersMessage, error.message);
+			} finally {
+				ordersRefresh.disabled = false;
+			}
+		}
+
+		function createOrderCard(order) {
+			const card = document.createElement("article");
+			card.className = "pedido-card superficie-card";
+			const summary = document.createElement("div");
+			summary.className = "pedido-resumen";
+			const orderDate = new Date(order.created_at).toLocaleDateString("es");
+			for (const [label, value] of [
+				["Pedido:", `#${order.id}`],
+				["Fecha:", orderDate],
+				["Cliente:", order.full_name],
+				["Total:", Store.formatPrice(order.total)],
+				["Pago:", order.payment_status]
+			]) {
+				const detail = document.createElement("div");
+				detail.className = "pedido-dato";
+				const title = document.createElement("span");
+				title.textContent = label;
+				const content = document.createElement("strong");
+				content.textContent = value;
+				detail.append(title, document.createTextNode(" "), content);
+				summary.append(detail);
+			}
+
+			const progressContainer = document.createElement("div");
+			progressContainer.className = "pedido-estados";
+			const progress = document.createElement("ol");
+			progress.className = "pedido-progreso";
+			progress.setAttribute("aria-label", `Estado del pedido: ${order.status}`);
+			const currentIndex = orderStatuses.indexOf(order.status);
+			for (const [index, status] of orderStatuses.entries()) {
+				const step = document.createElement("li");
+				step.className = "pedido-paso";
+				if (index <= currentIndex) step.classList.add("pedido-paso-completado");
+				step.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+				progress.append(step);
+			}
+			progressContainer.append(progress);
+			card.append(summary, progressContainer);
+
+			const details = document.createElement("div");
+			details.className = "admin-order-details";
+			const address = document.createElement("p");
+			address.textContent = `Envío: ${order.address}, ${order.city} | Teléfono: ${order.phone}`;
+			details.append(address);
+			const items = document.createElement("ul");
+			for (const item of order.items) {
+				const entry = document.createElement("li");
+				entry.textContent = `${item.product_name}: ${item.quantity} × ${Store.formatPrice(item.unit_price)}`;
+				items.append(entry);
+			}
+			details.append(items);
+
+			if (currentIndex >= 0 && currentIndex < orderStatuses.length - 1) {
+				const nextStatus = orderStatuses[currentIndex + 1];
+				const button = document.createElement("button");
+				button.type = "button";
+				button.className = "btn-tipo-4";
+				button.textContent = `Avanzar a ${nextStatus}`;
+				button.addEventListener("click", async () => {
+					const buttons = ordersList.querySelectorAll("button");
+					buttons.forEach((element) => { element.disabled = true; });
+					ordersRefresh.disabled = true;
+					showMessage(ordersMessage, "");
+					try {
+						await apiRequest(`/pedidos/${order.id}/estado`, {
+							method: "PATCH",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ status: nextStatus })
+						});
+						showMessage(ordersMessage, `Pedido #${order.id} actualizado a ${nextStatus}.`, false);
+						await loadOrders();
+					} catch (error) {
+						showMessage(dashboard.hidden ? loginMessage : ordersMessage, error.message);
+						if (error.status === 409 && adminToken) {
+							await loadOrders();
+						} else {
+							buttons.forEach((element) => { element.disabled = false; });
+							ordersRefresh.disabled = false;
+						}
+					}
+				});
+				details.append(button);
+			} else if (currentIndex < 0) {
+				const error = document.createElement("p");
+				error.className = "mensaje-error";
+				error.textContent = `Estado desconocido: ${order.status}.`;
+				details.append(error);
+			}
+			card.append(details);
+			return card;
+		}
+
+		ordersRefresh.addEventListener("click", () => {
+			showMessage(ordersMessage, "");
+			loadOrders();
+		});
+
+		function renderCategories(categories) {
+			categoriesList.replaceChildren();
+			productCategory.replaceChildren(new Option("Sin categoría", ""));
+			if (!categories.length) {
+				const empty = document.createElement("li");
+				empty.textContent = "Todavía no hay categorías.";
+				categoriesList.append(empty);
+			}
+			for (const category of categories) {
+				const option = new Option(category.name, category.id);
+				productCategory.add(option);
+
+				const item = document.createElement("li");
+				const name = document.createElement("span");
+				name.textContent = category.name;
+				const remove = document.createElement("button");
+				remove.type = "button";
+				remove.className = "btn-tipo-5";
+				remove.textContent = "Eliminar";
+				remove.addEventListener("click", () => deleteCategory(category));
+				item.append(name, remove);
+				categoriesList.append(item);
+			}
+		}
+
+		function renderProducts(categories, products) {
+			productsList.replaceChildren();
+			if (!products.length) {
+				const empty = document.createElement("p");
+				empty.textContent = "Todavía no hay productos.";
+				productsList.append(empty);
+				return;
+			}
+			const categoryNames = new Map(categories.map((category) => [
+				category.id,
+				category.name
+			]));
+			for (const product of products) {
+				const card = document.createElement("article");
+				card.className = "admin-product-card superficie-card";
+				if (product.image_path) {
+					const image = document.createElement("img");
+					image.src = Store.imageUrl(product.image_path);
+					image.alt = product.name;
+					card.append(image);
+				}
+				const details = document.createElement("div");
+				const name = document.createElement("h4");
+				name.textContent = product.name;
+				const category = document.createElement("p");
+				category.textContent = categoryNames.get(product.category_id) || "Sin categoría";
+				const description = document.createElement("p");
+				description.textContent = product.description || "Sin descripción";
+				const price = document.createElement("p");
+				price.textContent = `$${Number(product.price).toFixed(2)}`;
+				const stock = document.createElement("p");
+				stock.textContent = `Stock: ${product.stock}`;
+				details.append(name, category, description, price, stock);
+
+				const remove = document.createElement("button");
+				remove.type = "button";
+				remove.className = "btn-tipo-5";
+				remove.textContent = "Eliminar";
+				remove.addEventListener("click", () => deleteProduct(product));
+				card.append(details, remove);
+				productsList.append(card);
+			}
+		}
+
+		async function deleteCategory(category) {
+			if (!confirm(`¿Eliminar la categoría "${category.name}"?`)) return;
+			try {
+				await apiRequest(`/categorias/${category.id}`, { method: "DELETE" });
+				showMessage(dashboardMessage, "Categoría eliminada.", false);
+				await loadInventory();
+			} catch (error) {
+				if (error.status === 409) {
+					categoryWarning.showModal();
+				} else {
+					showMessage(dashboard.hidden ? loginMessage : dashboardMessage, error.message);
+				}
+			}
+		}
+
+		async function deleteProduct(product) {
+			if (!confirm(`¿Eliminar el producto "${product.name}"?`)) return;
+			try {
+				await apiRequest(`/productos/${product.id}`, { method: "DELETE" });
+				showMessage(dashboardMessage, "Producto eliminado.", false);
+				await loadInventory();
+			} catch (error) {
+				showMessage(dashboardMessage, error.message);
+			}
+		}
+
+		loginForm.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			showMessage(loginMessage, "");
+			const credentials = new URLSearchParams();
+			credentials.set("username", loginForm.elements.email.value.trim().toLowerCase());
+			credentials.set("password", loginForm.elements.password.value);
+			try {
+				const response = await fetch(`${API_BASE_URL}/auth/login`, {
+					method: "POST",
+					headers: { "Content-Type": "application/x-www-form-urlencoded" },
+					body: credentials
+				});
+				const data = await response.json().catch(() => null);
+				if (!response.ok) {
+					throw new Error(data?.detail || "Correo o contraseña incorrectos.");
+				}
+				adminToken = data.access_token;
+				const profile = await apiRequest("/auth/me");
+				if (profile.role !== "administrador") {
+					adminToken = null;
+					throw new Error("Esta cuenta no tiene rol administrador.");
+				}
+				sessionStorage.setItem(tokenKey, adminToken);
+				loginForm.reset();
+				await verifyAdminSession();
+			} catch (error) {
+				showMessage(loginMessage, error.message);
+			}
+		});
+
+		categoryForm.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			const formData = new FormData(categoryForm);
+			try {
+				await apiRequest("/categorias", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						name: formData.get("name").trim(),
+						description: formData.get("description").trim() || null,
+						image_path: formData.get("image_path").trim() || null
+					})
+				});
+				categoryForm.reset();
+				showMessage(dashboardMessage, "Categoría creada.", false);
+				await loadInventory();
+			} catch (error) {
+				showMessage(dashboardMessage, error.message);
+			}
+		});
+
+		productForm.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			const formData = new FormData(productForm);
+			const price = Number(formData.get("price"));
+			const stock = Number(formData.get("stock"));
+			if (!Number.isFinite(price) || price <= 0) {
+				showMessage(dashboardMessage, "El precio debe ser mayor que cero.");
+				return;
+			}
+			if (!Number.isInteger(stock) || stock < 0) {
+				showMessage(dashboardMessage, "El stock debe ser un entero no negativo.");
+				return;
+			}
+			const categoryId = formData.get("category_id");
+			try {
+				await apiRequest("/productos", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						name: formData.get("name").trim(),
+						description: formData.get("description").trim() || null,
+						price,
+						stock,
+						category_id: categoryId ? Number(categoryId) : null,
+						image_path: formData.get("image_path").trim() || null
+					})
+				});
+				productForm.reset();
+				showMessage(dashboardMessage, "Producto creado.", false);
+				await loadInventory();
+			} catch (error) {
+				showMessage(dashboardMessage, error.message);
+			}
+		});
+
+		document.querySelector("#admin-logout").addEventListener("click", () => {
+			endAdminSession();
+			showMessage(loginMessage, "Sesión de administrador cerrada.", false);
+		});
+
+		verifyAdminSession();
+	</script>
+</body>
+
+</html>

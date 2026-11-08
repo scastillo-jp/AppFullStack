@@ -11,12 +11,23 @@ from app.services import carrito_service
 router = APIRouter(prefix="/carrito", tags=["Carrito"])
 
 
-@router.get("")
+@router.get(
+    "",
+    summary="Consultar mi carrito",
+    description="Devuelve los artículos y el total del carrito del usuario autenticado.",
+)
 def get_cart(current_user: CurrentUser, session: SessionDep):
     return carrito_service.get_cart(current_user.id, session)
 
 
-@router.post("/items")
+@router.post(
+    "/items",
+    summary="Añadir un producto al carrito",
+    description=(
+        "Añade un producto al carrito o incrementa su cantidad si ya existe. "
+        "La cantidad no puede superar el inventario disponible."
+    ),
+)
 def add_cart_item(
     item_data: CarritoItemCreate,
     current_user: CurrentUser,
@@ -41,9 +52,19 @@ def add_cart_item(
         ) from error
 
 
-@router.patch("/items/{item_id}")
+@router.patch(
+    "/items/{item_id}",
+    summary="Cambiar cantidad de un artículo",
+    description=(
+        "Actualiza la cantidad de un artículo del carrito autenticado. "
+        "La cantidad debe ser mayor que cero y no superar el inventario."
+    ),
+)
 def update_cart_item(
-    item_id: Annotated[int, Path(gt=0)],
+    item_id: Annotated[
+        int,
+        Path(gt=0, description="Identificador del artículo del carrito.")
+    ],
     item_data: CarritoItemUpdate,
     current_user: CurrentUser,
     session: SessionDep
@@ -73,9 +94,17 @@ def update_cart_item(
     return cart
 
 
-@router.delete("/items/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/items/{item_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Quitar un artículo del carrito",
+    description="Elimina un artículo del carrito del usuario autenticado.",
+)
 def remove_cart_item(
-    item_id: Annotated[int, Path(gt=0)],
+    item_id: Annotated[
+        int,
+        Path(gt=0, description="Identificador del artículo del carrito.")
+    ],
     current_user: CurrentUser,
     session: SessionDep
 ) -> Response:

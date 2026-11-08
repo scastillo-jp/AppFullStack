@@ -12,7 +12,7 @@
 <body>
 	<div class="user-info">
 		<a id="login-link" class="btn-tipo-1" href="acceso.html">Iniciar sesión</a>
-		<button id="logout-button" class="btn-tipo-3" type="button" hidden>Cerrar sesión</button>
+		<button id="logout-button" class="btn-tipo-6" type="button" hidden>Cerrar sesión</button>
 		<div class="usuario-autorizado" hidden>
 			<p></p>
 			<img class="user-icon" src="../assets/logos/user.png" alt="Usuario">
@@ -43,9 +43,14 @@
 					</div>
 					<h2>Descripción del producto</h2>
 					<p id="producto-descripcion"></p>
-					<div class="acceso-campo">
+					<div class="producto-cantidad-campo">
 						<label for="producto-cantidad">Cantidad</label>
-						<input class="campo-texto" id="producto-cantidad" type="number" min="1" value="1">
+						<div class="producto-cantidad">
+							<button type="button" id="disminuir-cantidad" aria-label="Disminuir cantidad" disabled>−</button>
+							<input id="producto-cantidad" type="number" min="1" value="1" readonly
+								aria-label="Cantidad de productos" aria-live="polite">
+							<button type="button" id="aumentar-cantidad" aria-label="Aumentar cantidad" disabled>+</button>
+						</div>
 					</div>
 					<button class="btn-tipo-4 btn-size-full-width mt-5" id="agregar-carrito" type="button">
 						Añadir al carrito
@@ -66,7 +71,18 @@
 		const detail = document.querySelector("#detalle-producto");
 		const errorMessage = document.querySelector("#detalle-error");
 		const addButton = document.querySelector("#agregar-carrito");
+		const quantityInput = document.querySelector("#producto-cantidad");
+		const decreaseButton = document.querySelector("#disminuir-cantidad");
+		const increaseButton = document.querySelector("#aumentar-cantidad");
 		let product;
+
+		function updateQuantityControls() {
+			const quantity = Number(quantityInput.value);
+			const available = product.stock > 0;
+			decreaseButton.disabled = !available || quantity <= 1;
+			increaseButton.disabled = !available || quantity >= product.stock;
+			quantityInput.disabled = !available;
+		}
 
 		async function initializeDetail() {
 			const user = await Store.requireAuth();
@@ -85,21 +101,38 @@
 					product.category_name || "Sin categoría";
 				document.querySelector("#producto-nombre").textContent = product.name;
 				document.querySelector("#producto-precio").textContent = Store.formatPrice(product.price);
-				document.querySelector("#producto-stock").textContent =
-					product.stock > 0 ? `${product.stock} unidades disponibles` : "Agotado";
+				const stockLabel = document.querySelector("#producto-stock");
+				stockLabel.textContent =
+					product.stock > 0 ? `${product.stock} unidades disponibles` : "AGOTADO";
+				stockLabel.classList.toggle("color-secundario", product.stock < 1);
+				stockLabel.classList.toggle("color-terciario", product.stock > 0);
+				stockLabel.classList.toggle("text-bold", product.stock < 1);
 				document.querySelector("#producto-descripcion").textContent =
 					product.description || "Sin descripción.";
-				const quantityInput = document.querySelector("#producto-cantidad");
 				quantityInput.max = product.stock;
 				addButton.disabled = product.stock < 1;
-				if (product.stock < 1) quantityInput.disabled = true;
+				updateQuantityControls();
 			} catch (error) {
 				Store.showMessage(errorMessage, error.message);
 			}
 		}
 
+		decreaseButton.addEventListener("click", () => {
+			if (Number(quantityInput.value) > 1) {
+				quantityInput.value = Number(quantityInput.value) - 1;
+				updateQuantityControls();
+			}
+		});
+
+		increaseButton.addEventListener("click", () => {
+			if (Number(quantityInput.value) < product.stock) {
+				quantityInput.value = Number(quantityInput.value) + 1;
+				updateQuantityControls();
+			}
+		});
+
 		addButton.addEventListener("click", async () => {
-			const quantity = Number(document.querySelector("#producto-cantidad").value);
+			const quantity = Number(quantityInput.value);
 			const message = document.querySelector("#detalle-mensaje");
 			if (!Number.isInteger(quantity) || quantity < 1 || quantity > product.stock) {
 				Store.showMessage(message, "Indica una cantidad válida según el inventario.");

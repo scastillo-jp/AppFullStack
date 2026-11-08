@@ -11,12 +11,23 @@ from app.services import categoria_service
 router = APIRouter(prefix="/categorias", tags=["Categorías"])
 
 
-@router.get("", response_model=list[CategoriaRead])
+@router.get(
+    "",
+    response_model=list[CategoriaRead],
+    summary="Listar categorías",
+    description="Devuelve las categorías disponibles para cualquier usuario autenticado.",
+)
 def get_categories(current_user: CurrentUser, session: SessionDep):
     return categoria_service.get_categories(session)
 
 
-@router.post("", response_model=CategoriaRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=CategoriaRead,
+    status_code=status.HTTP_201_CREATED,
+    summary="Crear una categoría",
+    description="Crea una categoría nueva. Solo disponible para administradores.",
+)
 def create_category(
     category_data: CategoriaCreate,
     current_admin: CurrentAdmin,
@@ -31,9 +42,17 @@ def create_category(
         ) from error
 
 
-@router.put("/{category_id}", response_model=CategoriaRead)
+@router.put(
+    "/{category_id}",
+    response_model=CategoriaRead,
+    summary="Actualizar una categoría",
+    description="Actualiza los datos enviados de una categoría. Solo disponible para administradores.",
+)
 def update_category(
-    category_id: Annotated[int, Path(gt=0)],
+    category_id: Annotated[
+        int,
+        Path(gt=0, description="Identificador de la categoría.")
+    ],
     category_data: CategoriaUpdate,
     current_admin: CurrentAdmin,
     session: SessionDep
@@ -57,9 +76,20 @@ def update_category(
     return category
 
 
-@router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{category_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Eliminar una categoría",
+    description=(
+        "Elimina una categoría solo si no tiene productos asociados. "
+        "Solo disponible para administradores."
+    ),
+)
 def delete_category(
-    category_id: Annotated[int, Path(gt=0)],
+    category_id: Annotated[
+        int,
+        Path(gt=0, description="Identificador de la categoría.")
+    ],
     current_admin: CurrentAdmin,
     session: SessionDep
 ) -> Response:

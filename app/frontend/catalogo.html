@@ -12,7 +12,7 @@
 <body>
 	<div class="user-info">
 		<a id="login-link" class="btn-tipo-1" href="acceso.html">Iniciar sesión</a>
-		<button id="logout-button" class="btn-tipo-3" type="button" hidden>Cerrar sesión</button>
+		<button id="logout-button" class="btn-tipo-6" type="button" hidden>Cerrar sesión</button>
 		<div class="usuario-autorizado" hidden>
 			<p></p>
 			<img class="user-icon" src="../assets/logos/user.png" alt="Usuario">
@@ -33,20 +33,20 @@
 	<main>
 		<section class="busqueda-productos-seccion">
 			<div>
-				<h1 class="color-blanco txt-center">Catálogo de productos</h1>
+				<h1 class="color-blanco txt-center">Explora nuestro Catálogo de productos</h1>
 				<form class="catalogo-filtros" id="filtros-form">
-					<input class="campo-texto mt-20" id="busqueda" type="search"
+					<input class="barra-busqueda campo-texto mt-20" id="busqueda" type="search"
 						placeholder="Buscar productos..." aria-label="Buscar productos">
-					<select class="campo-texto mt-10" id="filtro-categoria" aria-label="Filtrar por categoría">
-						<option value="">Todas las categorías</option>
-					</select>
 					<button class="btn-tipo-1 btn-size-1" type="submit">Buscar</button>
 				</form>
 			</div>
 		</section>
 
 		<section class="productos-section catalogo-productos-section">
-			<p class="mt-5">Explora nuestra gama de productos.</p>
+			<h2 class="mt-5">Explora nuestra gama de productos</h2>
+			<select class="selector-categorias mt-10 mb-10" id="filtro-categoria" aria-label="Filtrar por categoría">
+				<option value="">Todas las categorías</option>
+			</select>
 			<div class="productos-container-items" id="productos-catalogo"></div>
 			<p id="catalogo-mensaje" role="status" hidden></p>
 		</section>

@@ -70,11 +70,19 @@
 
 	function imageUrl(path) {
 		if (!path) return "../assets/logos/logo.png";
-		const normalized = String(path).replaceAll("\\", "/");
-		if (!normalized.startsWith("assets/") || normalized.includes("..")) {
+		let normalized = String(path).trim().replaceAll("\\", "/");
+		normalized = normalized.replace(/^\.\/+/, "");
+		normalized = normalized.replace(/^app\//i, "");
+		const parts = normalized.split("/");
+		if (
+			!/^assets$/i.test(parts[0] || "") ||
+			parts.length < 2 ||
+			parts.some((part) => !part || part === "." || part === "..")
+		) {
 			return "../assets/logos/logo.png";
 		}
-		return `../${normalized}`;
+		parts[0] = "assets";
+		return `../${parts.map(encodeURIComponent).join("/")}`;
 	}
 
 	function showMessage(element, message, isError = true) {
@@ -105,9 +113,17 @@
 			const name = document.createElement("h3");
 			name.textContent = product.name;
 			const price = document.createElement("p");
-			price.textContent = `Precio: ${formatPrice(product.price)}`;
+			price.className = "precio-label";
+			price.textContent = `${formatPrice(product.price)}`;
 			const stock = document.createElement("p");
+			stock.className = "stock-text";
 			stock.textContent = `Stock: ${product.stock}`;
+			if (product.stock === 0) {
+				const unavailable = document.createElement("span");
+				unavailable.className = "warning-label";
+				unavailable.textContent = "No disponible";
+				stock.append(unavailable);
+			}
 			const description = document.createElement("p");
 			description.className = "descripcion-producto-recortada";
 			description.textContent = product.description || "";
@@ -115,10 +131,10 @@
 			link.href = `detalle-item.html?id=${encodeURIComponent(product.id)}`;
 			const button = document.createElement("button");
 			button.type = "button";
-			button.className = "btn-tipo-4 btn-size-full-width mt-5";
+			button.className = "btn-tipo-4 btn-size-full-width mt-10";
 			button.textContent = "Ver producto";
 			link.append(button);
-			info.append(name, price, stock, description, link);
+			info.append(name, price, description, stock, link);
 			card.append(image, info);
 			container.append(card);
 		}
@@ -130,9 +146,12 @@
 			const link = document.createElement("a");
 			link.className = "categoria-card";
 			link.href = `catalogo.html?category_id=${encodeURIComponent(category.id)}`;
+			const image = document.createElement("img");
+			image.src = imageUrl(category.image_path);
+			image.alt = "";
 			const name = document.createElement("p");
 			name.textContent = category.name;
-			link.append(name);
+			link.append(image, name);
 			container.append(link);
 		}
 		if (!categories.length) {

@@ -12,17 +12,37 @@ from app.services import pedido_service
 router = APIRouter(prefix="/pedidos", tags=["Pedidos"])
 
 
-@router.get("", response_model=list[PedidoRead])
+@router.get(
+    "",
+    response_model=list[PedidoRead],
+    summary="Listar mis pedidos",
+    description="Devuelve el historial de pedidos del usuario autenticado.",
+)
 def get_my_orders(current_user: CurrentUser, session: SessionDep):
     return pedido_service.get_orders(current_user.id, session)
 
 
-@router.get("/admin", response_model=list[PedidoRead])
+@router.get(
+    "/admin",
+    response_model=list[PedidoRead],
+    summary="Listar todos los pedidos",
+    description="Devuelve los pedidos de todos los usuarios. Requiere rol administrador.",
+)
 def get_all_orders(current_admin: CurrentAdmin, session: SessionDep):
     return pedido_service.get_orders(None, session)
 
 
-@router.post("", response_model=PedidoRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=PedidoRead,
+    status_code=status.HTTP_201_CREATED,
+    summary="Crear un pedido desde mi carrito",
+    description=(
+        "Confirma la compra con los artículos del carrito, valida y descuenta "
+        "el inventario, guarda una copia de los productos y precios, marca el "
+        "pago como pagado (simulado) y deja el pedido pendiente."
+    ),
+)
 def create_order(current_user: CurrentUser, session: SessionDep):
     try:
         return pedido_service.create_order(current_user, session)
@@ -33,9 +53,17 @@ def create_order(current_user: CurrentUser, session: SessionDep):
         ) from error
 
 
-@router.get("/{order_id}", response_model=PedidoRead)
+@router.get(
+    "/{order_id}",
+    response_model=PedidoRead,
+    summary="Consultar un pedido",
+    description=(
+        "Devuelve el detalle de un pedido propio. Los administradores pueden "
+        "consultar pedidos de cualquier usuario."
+    ),
+)
 def get_order(
-    order_id: Annotated[int, Path(gt=0)],
+    order_id: Annotated[int, Path(gt=0, description="Identificador del pedido.")],
     current_user: CurrentUser,
     session: SessionDep
 ):
@@ -49,9 +77,17 @@ def get_order(
     return order
 
 
-@router.patch("/{order_id}/estado", response_model=PedidoRead)
+@router.patch(
+    "/{order_id}/estado",
+    response_model=PedidoRead,
+    summary="Avanzar el estado de un pedido",
+    description=(
+        "Cambia el estado del pedido siguiendo el flujo pendiente → procesando "
+        "→ enviado → entregado. Solo disponible para administradores."
+    ),
+)
 def update_order_status(
-    order_id: Annotated[int, Path(gt=0)],
+    order_id: Annotated[int, Path(gt=0, description="Identificador del pedido.")],
     status_data: PedidoEstadoUpdate,
     current_admin: CurrentAdmin,
     session: SessionDep

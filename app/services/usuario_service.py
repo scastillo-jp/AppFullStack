@@ -1,6 +1,9 @@
 from sqlmodel import or_, select
 
-from app.models.usuario import Usuario
+from app.models.carrito import Carrito, CarritoItem
+from app.models.pedido import Pedido
+from app.models.producto import Producto
+from app.models.usuario import ROL_ADMINISTRADOR, Usuario
 from app.schemas.usuario import UsuarioCreate, UsuarioUpdate
 from app.core.security import hash_password, verify_password
 
@@ -29,6 +32,7 @@ def register_user(user_data: UsuarioCreate, session):
         address=user_data.address,
         city=user_data.city,
         phone=user_data.phone,
+        role=user_data.role,
     )
 
     session.add(user)
@@ -51,6 +55,54 @@ def authenticate_user(email: str, password: str, session):
         return None
 
     return user
+
+
+def get_users(session):
+    return session.exec(select(Usuario).order_by(Usuario.id)).all()
+
+
+def get_user(user_id: int, session):
+    return session.get(Usuario, user_id)
+
+
+def delete_user(user_id: int, session):
+    user = session.get(Usuario, user_id)
+    if user is None:
+        return "not_found"
+
+    if user.role == ROL_ADMINISTRADOR:
+        other_admin_id = session.exec(
+            select(Usuario.id).where(
+                Usuario.role == ROL_ADMINISTRADOR,
+                Usuario.id != user_id
+            )
+        ).first()
+        if other_admin_id is None:
+            return "last_admin"
+
+    has_products = session.exec(
+        select(Producto.id).where(Producto.user_id == user_id)
+    ).first()
+    has_orders = session.exec(
+        select(Pedido.id).where(Pedido.user_id == user_id)
+    ).first()
+    if has_products is not None or has_orders is not None:
+        return "in_use"
+
+    cart = session.exec(
+        select(Carrito).where(Carrito.user_id == user_id)
+    ).first()
+    if cart is not None:
+        items = session.exec(
+            select(CarritoItem).where(CarritoItem.cart_id == cart.id)
+        ).all()
+        for item in items:
+            session.delete(item)
+        session.delete(cart)
+
+    session.delete(user)
+    session.commit()
+    return "deleted"
 
 
 def update_user(user: Usuario, user_data: UsuarioUpdate, session):

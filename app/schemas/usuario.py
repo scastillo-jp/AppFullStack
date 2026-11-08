@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import StringConstraints
 from sqlmodel import SQLModel, Field
@@ -20,6 +20,7 @@ class UsuarioCreate(SQLModel):
     address: str = Field(min_length=5, max_length=250)
     city: str = Field(min_length=2, max_length=100)
     phone: str = Field(min_length=7, max_length=30)
+    role: Literal["administrador", "cliente"] = "cliente"
 
 class UsuarioRead(SQLModel):
     id: int

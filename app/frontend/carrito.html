@@ -12,7 +12,7 @@
 <body>
 	<div class="user-info">
 		<a id="login-link" class="btn-tipo-1" href="acceso.html">Iniciar sesión</a>
-		<button id="logout-button" class="btn-tipo-3" type="button" hidden>Cerrar sesión</button>
+		<button id="logout-button" class="btn-tipo-6" type="button" hidden>Cerrar sesión</button>
 		<div class="usuario-autorizado" hidden>
 			<p></p>
 			<img class="user-icon" src="../assets/logos/user.png" alt="Usuario">
@@ -153,7 +153,7 @@
 				quantity.append(decrease, output, increase);
 				const remove = document.createElement("button");
 				remove.type = "button";
-				remove.className = "carrito-eliminar";
+				remove.className = "btn-tipo-3";
 				remove.dataset.action = "remove";
 				remove.setAttribute("aria-label", `Eliminar ${item.name} del carrito`);
 				remove.textContent = "Eliminar";
