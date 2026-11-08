@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title class="mb-20">Mis Pedidos</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="icon" href="../assets/logos/logo.png">
+</head>
+
+<body>
+	<div class="user-info">
+		<a href="acceso.html">
+			<button class="btn-tipo-1"> Iniciar sesión</button>
+		</a>
+		<button class="btn-tipo-3"> Cerrar sesión</button>
+		<!-- Nombre del usuario se muestra si se inicia sesión -->
+		<div class="usuario-autorizado">
+			<p>Nombre del usuario</p>
+			<img class="user-icon" src="../assets/logos/user.png" alt="user.png">
+		</div>
+	</div>
+
+	<header>
+		<a href="index.html">
+			<img class="store-logo" src="../assets/logos/logo.png" alt="logo.png">
+		</a>
+		<nav>
+			<ul class="nav-items">
+				<li><a href="index.html">Landing Page</a></li>
+				<li><a href="catalogo.html">Catálogo</a></li>
+				<li><a href="mis-pedidos.html">Mis Pedidos</a></li>
+				<li><a href="carrito.html">Carrito</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<main class="mis-pedidos-page">
+		<h2 class="mb-10">Mi Dirección de envío</h2>
+		<div class="mi-direccion mb-20">
+			<p class="pedido-dato"><span>Dirección:</span> <b>Calle Falsa 123, Ciudad, País</b></p>
+			<p class="pedido-dato"><span>Ciudad:</span> <b>Loja</b></p>
+			<p class="pedido-dato"><span>Teléfono:</span> <b>12345</b></p>
+		</div>
+		<h2 class="mb-10">Mis Pedidos</h2>
+		<article class="pedido-card superficie-card">
+			<div class="pedido-resumen">
+				<div class="pedido-dato">
+					<span>Pedido realizado:</span>
+					<strong>11/7/2026</strong>
+				</div>
+				<div class="pedido-dato">
+					<span>Total:</span>
+					<strong>$129.99</strong>
+				</div>
+				<div class="pedido-dato">
+					<span>Pedido ID#:</span>
+					<strong>ORD-4888</strong>
+				</div>
+			</div>
+			<div class="pedido-estados">
+				<ol class="pedido-progreso" aria-label="Estado del pedido">
+					<li class="pedido-paso pedido-paso-completado">Pendiente</li>
+					<li class="pedido-paso pedido-paso-completado">Procesando</li>
+					<li class="pedido-paso">Enviado</li>
+					<li class="pedido-paso">Entregado</li>
+				</ol>
+			</div>
+			<div class="pedido-producto">
+				<img class="pedido-producto-imagen" src="../assets/productos/teclados/logitec.jpg" alt="logitec.jpg">
+				<div class="pedido-producto-info">
+					<h4>Auriculares Inalámbricos Pro</h4>
+					<p>Cant: 1</p>
+				</div>
+				<strong class="pedido-producto-precio">$129.99</strong>
+			</div>
+		</article>
+
+		<article class="pedido-card superficie-card mt-10">
+			<div class="pedido-resumen">
+				<div class="pedido-dato">
+					<span>Pedido realizado:</span>
+					<strong>11/7/2026</strong>
+				</div>
+				<div class="pedido-dato">
+					<span>Total:</span>
+					<strong>$129.99</strong>
+				</div>
+				<div class="pedido-dato">
+					<span>Pedido ID#:</span>
+					<strong>ORD-4888</strong>
+				</div>
+			</div>
+			<div class="pedido-estados">
+				<ol class="pedido-progreso" aria-label="Estado del pedido">
+					<li class="pedido-paso pedido-paso-completado">Pendiente</li>
+					<li class="pedido-paso pedido-paso-completado">Procesando</li>
+					<li class="pedido-paso">Enviado</li>
+					<li class="pedido-paso">Entregado</li>
+				</ol>
+			</div>
+			<div class="pedido-producto">
+				<img class="pedido-producto-imagen" src="../assets/productos/teclados/logitec.jpg" alt="logitec.jpg">
+				<div class="pedido-producto-info">
+					<h4>Auriculares Inalámbricos Pro</h4>
+					<p>Cant: 1</p>
+				</div>
+				<strong class="pedido-producto-precio">$129.99</strong>
+			</div>
+		</article>
+	</main>
+	<footer>
+		<p>2026 Mi tienda en linea. Todos los derechos reservados.</p>
+	</footer>
+</body>
+
+</html>

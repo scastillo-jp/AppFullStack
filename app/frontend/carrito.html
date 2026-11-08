@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Carrito de compras</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="icon" href="../assets/logos/logo.png">
+</head>
+
+<body>
+	<div class="user-info">
+		<a href="acceso.html">
+			<button class="btn-tipo-1"> Iniciar sesión</button>
+		</a>
+		<button class="btn-tipo-3"> Cerrar sesión</button>
+		<!-- Nombre del usuario se muestra si se inicia sesión -->
+		<div class="usuario-autorizado">
+			<p>Nombre del usuario</p>
+			<img class="user-icon" src="../assets/logos/user.png" alt="user.png">
+		</div>
+	</div>
+
+	<header>
+		<a href="index.html">
+			<img class="store-logo" src="../assets/logos/logo.png" alt="logo.png">
+		</a>
+
+		<nav>
+			<ul class="nav-items">
+				<li><a href="index.html">Landing Page</a></li>
+				<li><a href="catalogo.html">Catálogo</a></li>
+				<li><a href="mis-pedidos.html">Mis Pedidos</a></li>
+				<li><a href="carrito.html">Carrito</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<main class="carrito-page" id="carrito-page">
+		<h1 class="mb-20">Tu Carrito de Compras</h1>
+
+		<section class="carrito-items" aria-label="Productos en el carrito">
+			<article class="carrito-item superficie-card" data-price="30">
+				<img class="carrito-producto-imagen" src="../assets/productos/cables/usbc.png" alt="Cable USB-C">
+				<div class="carrito-producto-info">
+					<h2>Cable USB-C</h2>
+					<p class="carrito-categoria">Electrónica</p>
+					<p class="carrito-precio">$30.00</p>
+				</div>
+
+				<div class="carrito-acciones">
+					<div class="carrito-cantidad" aria-label="Cantidad del producto">
+						<button type="button" data-action="decrease" aria-label="Disminuir cantidad">−</button>
+						<output data-quantity aria-live="polite">1</output>
+						<button type="button" data-action="increase" aria-label="Aumentar cantidad">+</button>
+					</div>
+					<button class="carrito-eliminar" type="button" data-action="remove"
+						aria-label="Eliminar Cable USB-C del carrito">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path d="M4 7h16M10 11v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3" />
+						</svg>
+					</button>
+				</div>
+			</article>
+		</section>
+
+		<section class="carrito-resumen" aria-labelledby="carrito-resumen-titulo">
+			<h2 id="carrito-resumen-titulo">Resumen de Compra</h2>
+			<div class="carrito-resumen-fila">
+				<span>Subtotal (<span data-item-count>1 artículo</span>)</span>
+				<span data-subtotal>$30.00</span>
+			</div>
+
+			<div class="carrito-total">
+				<strong>Total</strong>
+				<strong data-total>$30.00</strong>
+			</div>
+			<button class="btn-tipo-1 btn-size-full-width mt-10" id="mostrar-pago" type="button"
+				aria-controls="pagar-contener" aria-expanded="false">Confirmar Compra</button>
+		</section>
+	</main>
+	<section class="pagar-contener" id="pagar-contener" aria-labelledby="pago-titulo" hidden>
+		<div class="pago-encabezado">
+			<h1>Finalizar compra</h1>
+		</div>
+		<div class="pago-direccion superficie-card">
+			<h2>Dirección de envío</h2>
+			<p class="pago-ayuda">Tu pedido se enviará a la dirección registrada en tu cuenta.</p>
+			<div class="pago-datos">
+				<div><label>Nombres</label><span>Juan Pérez</span></div>
+				<div><label>Dirección</label><span>Calle Falsa 123</span></div>
+				<div><label>Ciudad</label><span>Loja</span></div>
+				<div><label>Teléfono</label><span>12345</span></div>
+			</div>
+
+			<h2 class="mt-20">Monto total a pagar</h2>
+			<p class="pago-monto-total"><strong data-payment-total>$30.00</strong></p>
+
+		</div>
+
+		<form class="metodo-pago superficie-card" id="formulario-pago">
+			<h2 id="pago-titulo">Método de pago</h2>
+			<p class="pago-ayuda">Ingresa los datos de tu tarjeta para continuar.</p>
+			<div class="pago-campo">
+				<label for="tarjeta">Número de tarjeta</label>
+				<input class="campo-texto" type="text" id="tarjeta" name="tarjeta"
+					placeholder="1234 5678 9012 3456" inputmode="numeric" autocomplete="cc-number" required>
+			</div>
+			<div class="pago-campos-secundarios">
+				<div class="pago-campo">
+					<label for="vencimiento">Fecha de vencimiento</label>
+					<input class="campo-texto" type="text" id="vencimiento" name="vencimiento" placeholder="MM/AA"
+						autocomplete="cc-exp" required>
+				</div>
+				<div class="pago-campo">
+					<label for="cvv">CVV</label>
+					<input class="campo-texto" type="password" id="cvv" name="cvv" placeholder="123"
+						inputmode="numeric" autocomplete="cc-csc" required>
+				</div>
+			</div>
+			<button type="submit" class="btn-tipo-1 btn-size-full-width">Pagar</button>
+			<button class="btn-tipo-3 btn-size-full-width" id="cancelar-pago" type="button">Cancelar pago</button>
+		</form>
+	</section>
+	<footer>
+		<p>2026 Mi tienda en linea. Todos los derechos reservados.</p>
+	</footer>
+
+	<script>
+		const cartItems = document.querySelector(".carrito-items");
+		const cartItem = document.querySelector(".carrito-item");
+		const price = Number(cartItem.dataset.price);
+		const quantityOutput = cartItem.querySelector("[data-quantity]");
+		const itemCount = document.querySelector("[data-item-count]");
+		const subtotal = document.querySelector("[data-subtotal]");
+		const total = document.querySelector("[data-total]");
+		const paymentTotal = document.querySelector("[data-payment-total]");
+		const checkout = document.querySelector("#pagar-contener");
+		const cartPage = document.querySelector("#carrito-page");
+		const confirmPurchase = document.querySelector("#mostrar-pago");
+		const cancelPayment = document.querySelector("#cancelar-pago");
+
+		confirmPurchase.addEventListener("click", () => {
+			cartPage.hidden = true;
+			checkout.hidden = false;
+			confirmPurchase.setAttribute("aria-expanded", "true");
+			checkout.scrollIntoView({ behavior: "smooth", block: "start" });
+		});
+
+		cancelPayment.addEventListener("click", () => {
+			checkout.hidden = true;
+			cartPage.hidden = false;
+			confirmPurchase.setAttribute("aria-expanded", "false");
+			confirmPurchase.focus();
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		});
+
+		document.querySelector("#formulario-pago").addEventListener("submit", (event) => {
+			event.preventDefault();
+			window.location.href = "mis-pedidos.html";
+		});
+
+		function updateSummary(quantity) {
+			const amount = (price * quantity).toFixed(2);
+			quantityOutput.value = quantity;
+			itemCount.textContent = `${quantity} ${quantity === 1 ? "artículo" : "artículos"}`;
+			subtotal.textContent = `$${amount}`;
+			total.textContent = `$${amount}`;
+			paymentTotal.textContent = `$${amount}`;
+		}
+
+		cartItem.addEventListener("click", (event) => {
+			const action = event.target.closest("button")?.dataset.action;
+			const quantity = Number(quantityOutput.value);
+
+			if (action === "increase") {
+				updateSummary(quantity + 1);
+			} else if (action === "decrease" && quantity > 1) {
+				updateSummary(quantity - 1);
+			} else if (action === "remove") {
+				cartItem.remove();
+				cartItems.innerHTML = '<p class="carrito-vacio">Tu carrito está vacío.</p>';
+				itemCount.textContent = "0 artículos";
+				subtotal.textContent = "$0.00";
+				total.textContent = "$0.00";
+				paymentTotal.textContent = "$0.00";
+				confirmPurchase.disabled = true;
+				checkout.hidden = true;
+				cartPage.hidden = false;
+			}
+		});
+	</script>
+</body>
+
+</html>

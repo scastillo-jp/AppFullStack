@@ -1,147 +1,130 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tienda Tecnológica</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header>
-      <nav>
-        <figure>
-          <img class="logo" src="../img/logos/logo.png" alt="Logo de la tienda"/>
-        </figure>
-        <ul class="lista_navegacion">
-          <li class="elemento_lista"><a href="index.html">Ver Catálogo de productos</a></li>
-          <li class="elemento_lista"><a href="administrar.html">Administrar</a></li>
-        </ul>
-      </nav>
-    </header>
+<!DOCTYPE html>
+<html lang="en">
 
-    <div style="display: flex">
-      <main>
-        <h1>Catálogo de productos</h1>
-        <h3>Buscar productos</h3>
-        <div class="buscar-productos">
-          <input type="text" id="search" placeholder="Buscar..." />
-          <button class="btn-buscar" id="search-btn">Buscar</button>
-          <button class="btn-limpiar" id="clear-btn" type="button">Limpiar</button>
-          <div class="card-search-results" id="search-results"></div>
-        </div>
-        <div class="tarjeta-producto" id="products-list">
-          <div id="products"></div>
-        </div>
-      </main>
-    </div>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Landing Page</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="icon" href="../assets/logos/logo.png">
+</head>
 
-  </body>
-  <script>
-    const API = "http://localhost:8000";
+<body>
+	<div class="user-info">
+		<a href="acceso.html">
+			<button class="btn-tipo-1"> Iniciar sesión</button>
+		</a>
+		<button class="btn-tipo-3"> Cerrar sesión</button>
+		<!-- Nombre del usuario se muestra si se inicia sesión -->
+		<div class="usuario-autorizado">
+			<p>Nombre del usuario</p>
+			<img class="user-icon" src="../assets/logos/user.png" alt="user.png">
+		</div>
+	</div>
 
-    function crearTarjeta(producto) {
-      const tarjeta = document.createElement("article");
-      tarjeta.classList.add("card-producto");
+	<header>
+		<a href="index.html">
+			<img class="store-logo" src="../assets/logos/logo.png" alt="logo.png">
+		</a>
+		<nav>
+			<ul class="nav-items">
+				<li><a href="index.html" aria-current="page">Landing Page</a></li>
+				<li><a href="catalogo.html">Catálogo</a></li>
+				<li><a href="mis-pedidos.html">Mis Pedidos</a></li>
+				<li><a href="carrito.html">Carrito</a></li>
+			</ul>
+		</nav>
+	</header>
+	<main>
+		<section class="busqueda-productos-seccion">
+			<div>
+				<h1 class="color-blanco txt-center">Descubre la mejor tecnología y estilo para tu día a día.</h1>
+				<input class="barra-busqueda campo-texto" type="text" placeholder="Buscar productos...">
+				<button class="btn-tipo-1 btn-size-1">Buscar</button>
+			</div>
+		</section>
+		<section class="categorias-seccion">
+			<h2>Categorías Principales</h2>
+			<div class="categorias-container">
+				<div class="categoria-card">
+					<!-- <img src="../assets/categoria-logos/electronica.png" alt="Electrónica"> -->
+					<p>Electrónica</p>
+				</div>
+				<div class="categoria-card">
+					<!-- <img src="../assets/categoria-logos/hogar.png" alt="Hogar"> -->
+					<p>Hogar</p>
+				</div>
+				<div class="categoria-card">
+					<!-- <img src="../assets/categoria-logos/ropa.png" alt="Ropa"> -->
+					<p>Ropa</p>
+				</div>
+			</div>
 
-      const id = document.createElement("p");
-      id.textContent = "ID: " + producto.id;
+		</section>
 
-      const nombre = document.createElement("h3");
-      nombre.textContent = producto.nombre;
+		<section class="productos-section">
+			<!-- productos seleccionados aleatoriamente de todo el catálogo. agrupados por categorias -->
+			<h2 class="mt-20 mb-10">Productos seleccionados aleatoriamente de todo el catálogo</h2>
+			<div>
+				<div class="productos-container-items">
+					<div class="item-card">
+						<img src="../assets/productos/cables/usbc.png" alt="usbc.png">
+						<div class="item-card-info">
+							<p><b> Nombre del producto</b></p>
+							<p>Precio: $XX.XX</p>
+							<p class="descripcion-producto-recortada">Descripción breve del producto</p>
+							<a href="detalle-item.html">
+								<button class="btn-tipo-4 btn-size-full-width mt-5">Ver producto</button>
+							</a>
+						</div>
+					</div>
+					<div class="item-card">
+						<img src="../assets/productos/cables/usbc.png" alt="usbc.png">
+						<div class="item-card-info">
+							<p><b> Nombre del producto</b></p>
+							<p>Precio: $XX.XX</p>
+							<p class="descripcion-producto-recortada">Descripción breve del producto</p>
+							<a href="detalle-item.html">
+								<button class="btn-tipo-4 btn-size-full-width mt-5">Ver producto</button>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div>
+					<h2 class="mt-20 mb-10">Productos destacados</h2>
+					<div class="productos-container-items">
+						<div class="item-card">
+							<img src="../assets/productos/cables/usbc.png" alt="usbc.png">
+							<div class="item-card-info">
+								<p><b> Nombre del producto</b></p>
+								<p>Precio: $XX.XX</p>
+								<p class="descripcion-producto-recortada">Descripción breve del producto</p>
+								<a href="detalle-item.html">
+									<button class="btn-tipo-4 btn-size-full-width mt-5">Ver producto</button>
+								</a>
+							</div>
+						</div>
+						<div class="item-card">
+							<img src="../assets/productos/cables/usbc.png" alt="usbc.png">
+							<div class="item-card-info">
+								<p><b> Nombre del producto</b></p>
+								<p>Precio: $XX.XX</p>
+								<p class="descripcion-producto-recortada">Descripción breve del producto</p>
+								<a href="detalle-item.html">
+									<button class="btn-tipo-4 btn-size-full-width mt-5">Ver producto</button>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-      const descripcion = document.createElement("p");
-      descripcion.textContent = producto.descripcion ?? "";
+	</main>
 
-      const precio = document.createElement("p");
-      precio.textContent = "$" + producto.precio.toFixed(2);
+	<footer>
+		<p>2026 Mi tienda en linea. Todos los derechos reservados.</p>
+	</footer>
+</body>
 
-      const btnEliminar = document.createElement("button");
-      btnEliminar.type = "button";
-      btnEliminar.classList.add("btn-eliminar");
-      btnEliminar.textContent = "Eliminar";
-      btnEliminar.addEventListener("click", async () => {
-        if (!confirm(`¿Eliminar "${producto.nombre}"?`)) return;
-        const respuesta = await fetch(`${API}/productos/${producto.id}`, { method: "DELETE" });
-        if (!respuesta.ok) {
-          alert("No se pudo eliminar el producto");
-          return;
-        }
-        limpiarBusqueda();
-      });
-
-      if (producto.img) {
-        const img_producto = document.createElement("img");
-        img_producto.src = "../" + producto.img;
-        img_producto.alt = producto.nombre;
-        tarjeta.appendChild(img_producto);
-      }
-
-      tarjeta.append(id, nombre, descripcion, precio, btnEliminar);
-      return tarjeta;
-    }
-
-    function cargarProductos() {
-      return Promise.all([
-        fetch(`${API}/categorias`).then((r) => r.json()),
-        fetch(`${API}/productos`).then((r) => r.json()),
-      ]).then(([categorias, productos]) => {
-        const secciones = categorias.map((categoria) => {
-          const delGrupo = productos.filter((p) => p.categoria_id === categoria.id);
-          if (delGrupo.length === 0) return null;
-
-          const seccion = document.createElement("section");
-          const titulo = document.createElement("h2");
-          titulo.textContent = "Categoría: " + categoria.nombre;
-          seccion.append(titulo, ...delGrupo.map(crearTarjeta));
-          return seccion;
-        }).filter(Boolean);
-
-        document.getElementById("products").replaceChildren(...secciones);
-      });
-    }
-
-    async function buscarProducto() {
-      const resultados = document.getElementById("search-results");
-      const valor = document.getElementById("search").value.trim();
-
-      if (valor === "") {
-        limpiarBusqueda();
-        return;
-      }
-
-      document.getElementById("products-list").hidden = true;
-
-      if (!/^\d+$/.test(valor)) {
-        resultados.textContent = "Ingresa un ID numérico";
-        return;
-      }
-
-      try {
-        const respuesta = await fetch(`${API}/productos/${valor}`);
-        if (respuesta.status === 404) {
-          resultados.textContent = "Producto no encontrado";
-          return;
-        }
-        if (!respuesta.ok) throw new Error(respuesta.status);
-        resultados.replaceChildren(crearTarjeta(await respuesta.json()));
-      } catch {
-        resultados.textContent = "Error al buscar el producto";
-      }
-    }
-
-    function limpiarBusqueda() {
-      document.getElementById("search").value = "";
-      document.getElementById("search-results").replaceChildren();
-      document.getElementById("products-list").hidden = false;
-      cargarProductos();
-    }
-
-    document.getElementById("clear-btn").addEventListener("click", limpiarBusqueda);
-    document.getElementById("search-btn").addEventListener("click", buscarProducto);
-    document.getElementById("search").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") buscarProducto();
-    });
-
-    cargarProductos();
-  </script>
 </html>
