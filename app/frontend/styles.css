@@ -84,7 +84,7 @@ header {
   border-radius: 15px;
   text-align: left;
   width: 250px;
-  height: 380px;
+  height: 390px;
   margin: 0 5px 5px 0;
   background: white;
 }
@@ -356,16 +356,6 @@ header {
   background: #f3f4f6;
 }
 
-.carrito-eliminar {
-  display: grid;
-  width: 38px;
-  height: 40px;
-  place-items: center;
-  border: 0;
-  background: transparent;
-  color: #ef4444;
-}
-
 .carrito-resumen-fila {
   margin-bottom: 20px;
   color: #4b5563;
@@ -510,8 +500,7 @@ header {
   font-size: 16px;
 }
 
-.pedido-dato strong,
-.pedido-dato time {
+.pedido-dato strong {
   color: #111827;
   font-size: 19px;
   font-weight: 600;
@@ -658,8 +647,7 @@ header {
     font-size: 14px;
   }
 
-  .pedido-dato strong,
-  .pedido-dato time {
+  .pedido-dato strong {
     font-size: 16px;
   }
 

@@ -48,13 +48,14 @@
 		<section class="categorias-seccion">
 			<h2>Categorías</h2>
 			<div class="categorias-container" id="categorias-container"></div>
+			<p id="categorias-mensaje" role="status" hidden></p>
 		</section>
 
 		<section class="productos-section">
 			<h2 class="mt-20 mb-10">Productos destacados</h2>
 			<div class="productos-container-items" id="productos-destacados"></div>
-			<h2 class="mt-20 mb-10">Más productos</h2>
-			<div class="productos-container-items" id="productos-lista"></div>
+			<!-- <h2 class="mt-20 mb-10">Más productos</h2> -->
+			<!-- <div class="productos-container-items" id="productos-lista"></div> -->
 			<p id="inicio-mensaje" role="status" hidden></p>
 		</section>
 	</main>
@@ -68,26 +69,31 @@
 		async function iniciarInicio() {
 			const user = await Store.requireAuth();
 			if (!user) return;
+			await Promise.all([cargarProductos(), cargarCategorias()]);
+		}
+
+		async function cargarProductos() {
 			try {
-				const [products, categories] = await Promise.all([
-					Store.request("/productos"),
-					Store.request("/categorias")
-				]);
+				const products = await Store.request("/productos");
 				const shuffled = [...products].sort(() => Math.random() - 0.5);
 				Store.renderProductCards(
 					document.querySelector("#productos-destacados"),
 					shuffled.slice(0, 4)
 				);
-				Store.renderProductCards(
-					document.querySelector("#productos-lista"),
-					shuffled.slice(4, 12)
-				);
+			} catch (error) {
+				Store.showMessage(document.querySelector("#inicio-mensaje"), error.message);
+			}
+		}
+
+		async function cargarCategorias() {
+			try {
+				const categories = await Store.request("/categorias");
 				Store.renderCategories(
 					document.querySelector("#categorias-container"),
 					categories
 				);
 			} catch (error) {
-				Store.showMessage(document.querySelector("#inicio-mensaje"), error.message);
+				Store.showMessage(document.querySelector("#categorias-mensaje"), error.message);
 			}
 		}
 
